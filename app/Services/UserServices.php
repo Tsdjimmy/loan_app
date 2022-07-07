@@ -3,9 +3,10 @@
 
 namespace App\services;
 
-use App\Helpers\GeneralHelper;
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Helpers\GeneralHelper;
+use App\Helpers\ConstantVariables;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 
@@ -38,9 +39,9 @@ class UserServices
             $image = $request->input('image');
             $password = $request->input('password');
 
-            if (User::where('username', $username)->count() > 0) return response()->json(['message' => 'Username already exist.'], 200);
+            if (User::where('username', $username)->count() > 0) return response()->json(['message' => ConstantVariables::USERNAME_EXISTS], 200);
 
-            if (User::where('phone', $phone)->count() > 0) return response()->json(['message' => 'Phone number already in use'], 200);
+            if (User::where('phone', $phone)->count() > 0) return response()->json(['message' => ConstantVariables::PHONE_EXISTS], 200);
 
             $user = new User();
             $user->username = $username;
@@ -55,7 +56,7 @@ class UserServices
 
             return response()->json(
                 [
-                    'message' => 'Account created successfully',
+                    'message' => ConstantVariables::ACCOUNT_CREATED,
                     'data' => [
                         'user' => $user,
                         'token' => $token,
@@ -82,15 +83,15 @@ class UserServices
 
             $user = User::where('username', $username)->first();
 
-            if (is_null($user)) return response()->json(['message' => 'Invalid credentials provided'], 400);
+            if (is_null($user)) return response()->json(['message' => ConstantVariables::INVALID_CREDENTIALS], 400);
 
-            if (!password_verify($password, $user->password)) return response()->json(['message' => 'Invalid credentials provided'], 400);
+            if (!password_verify($password, $user->password)) return response()->json(['message' => ConstantVariables::INVALID_CREDENTIALS], 400);
 
 
             $token = $user->createToken('Personal Access Token', ['user'])->accessToken;
             return response()->json(
                 [
-                    'message' => 'Access granted successfully',
+                    'message' => ConstantVariables::LOGIN_SUCCESSFUL,
                     'data' => [
                         'user' => $user,
                         'token' => $token
@@ -100,7 +101,7 @@ class UserServices
             );
         } catch (\Exception $e) {
             return response()->json([
-                'message' => 'An error occurred while logging in',
+                'message' => ConstantVariables::ERROR_OCCURED,
                 'short_description' => $e->getMessage(),
             ], 400);
         }

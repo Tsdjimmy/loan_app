@@ -7,6 +7,7 @@ use App\Models\Loan;
 use Illuminate\Http\Request;
 use App\Helpers\GeneralHelper;
 use Illuminate\Support\Carbon;
+use App\Helpers\ConstantVariables;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
@@ -38,7 +39,7 @@ class LoanServices
 
         $loan->save();
 
-        return response()->json(['message' => 'Loan record was successfully created'], 200);
+        return response()->json(['message' => ConstantVariables::CREATED], 200);
 
     }
 
@@ -51,8 +52,8 @@ class LoanServices
         ->join('admins', 'admins.id', '=', 'loans.approved_by')
         ->get();
         if( !$loan_data )
-            return response()->json(['message' => 'Loan data not found'], 200);
-        return response()->json(['message' => 'Fetched Successfully', 'data' => $loan_data], 200);
+            return response()->json(['message' => ConstantVariables::NO_DATA], 200);
+        return response()->json(['message' => ConstantVariables::FETCHED, 'data' => $loan_data], 200);
     }
 
     public static function allLoan()
@@ -61,8 +62,8 @@ class LoanServices
         ->join('users', 'users.id', '=', 'loans.user_id')
         ->get();
         if( !$loan_data )
-            return response()->json(['message' => 'Loan data not found'], 200);
-        return response()->json(['message' => 'Fetched Successfully', 'data' => $loan_data], 200);
+            return response()->json(['message' => constantVariables::NO_DATA], 200);
+        return response()->json(['message' => ConstantVariables::FETCHED, 'data' => $loan_data], 200);
     }
 
     public static function approveLoan( $request )
@@ -72,15 +73,15 @@ class LoanServices
         $status = $request->input('status');
 
         if($status == null)
-        return response()->json(['message' => 'Status is required'], 200);
+        return response()->json(['message' => ConstantVariables::STATUS_REQUIRED], 200);
 
         if( $status != 'approved' &&  $status != 'rejected')
-            return response()->json(['message' => 'Invalid Status Entered'], 200);
+            return response()->json(['message' => ConstantVariables::STATUS_INVALID], 200);
 
         $loan_data = Loan::where('id', $loan_id)->first();
 
         if( !$loan_data )
-            return response()->json(['message' => 'Loan data not found'], 200);
+            return response()->json(['message' => ConstantVariables::NO_DATA], 200);
 
         $update = Loan::where('id', $loan_id)->update([
             'status' => $status,
