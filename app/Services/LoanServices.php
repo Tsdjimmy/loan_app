@@ -55,6 +55,16 @@ class LoanServices
         return response()->json(['message' => 'Fetched Successfully', 'data' => $loan_data], 200);
     }
 
+    public static function allLoan()
+    {
+        $loan_data = Loan::select('loans.*', 'users.username')
+        ->join('users', 'users.id', '=', 'loans.user_id')
+        ->get();
+        if( !$loan_data )
+            return response()->json(['message' => 'Loan data not found'], 200);
+        return response()->json(['message' => 'Fetched Successfully', 'data' => $loan_data], 200);
+    }
+
     public static function approveLoan( $request )
     {
         $admin = Auth::user()->id;

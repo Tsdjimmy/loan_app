@@ -33,6 +33,11 @@ class LoanController extends Controller
     {
         return LoanServices::getLoan( $request );
     }
+    
+    public static function allLoan( Request $request ): \Illuminate\Http\JsonResponse
+    {
+        return LoanServices::allLoan();
+    }
     /**
      * Store a newly created resource in storage.
      *

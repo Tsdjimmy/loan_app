@@ -20,10 +20,11 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
     Route::get('/signup', [\App\Http\Controllers\UserController::class, 'signup']);
     Route::post('/login', [\App\Http\Controllers\UserController::class, 'login']);
-    Route::group(['middleware' => ['auth:api'], 'prefix' => 'loan'], function () {
+    Route::group(['middleware' => ['auth:api'], 'prefix' => 'loans'], function () {
         Route::post('/create-loan', [\App\Http\Controllers\LoanController::class, 'createLoan']);
         Route::put('/approve-loan', [\App\Http\Controllers\LoanController::class, 'approveLoan']);
         Route::get('/get-loan', [\App\Http\Controllers\LoanController::class, 'getLoan']);
+        Route::get('/all-loans', [\App\Http\Controllers\LoanController::class, 'allLoan']);
     });
     Route::post('/articles/{id}/like', [\App\Http\Controllers\CommentController::class, 'likes']);
     Route::post('/articles/{id}/comment', [\App\Http\Controllers\CommentController::class, 'createComment']);
